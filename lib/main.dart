@@ -4,26 +4,28 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import "package:http/http.dart" as http;
 import "package:xml/xml.dart" as xml;
-import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'modal_progress_hud.dart';
+import 'cross_off_text.dart';
+import 'dual_panel.dart';
 
 void main() => runApp(new DunavaApp());
 
-bool themeOn = false;
+final String databaseVersion = '1.0';
 
-final spreadsheetUrl =
+final String spreadsheetUrl =
     'https://docs.google.com/spreadsheets/d/13WlZBIQodwZuu4olBTR3UlQJfw06JZ3KWuwQ9Ig9qBE/';
 
-final _credentials = new ServiceAccountCredentials.fromJson(r'''
+final ServiceAccountCredentials _credentials =
+    new ServiceAccountCredentials.fromJson(r'''
 {
   "type": "service_account",
   "project_id": "dunava-database",
-  "private_key_id": "f5a075cc5501f3a1bd318cb3ce96e9f6f9f9df66",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQChidrrwDL6Phka\ndgT/deBhXC7c3rdmQQufBBQWU5AkzTCnXyrkNLp+MOK3OwEwWP5XUHJs5I50JexQ\nffFN0XW817jRwDORmK2kUgZEWylZRiduP0DppDINYHRnUT2Kgsekc2g9zHgoGTaP\nQ3uIox0u6KlzWEMlXNCXyt9OcTX3odrD/j+8CjJmOdv5wFJheT9yQNWrDOawznzt\nqwV4QFO3CdbL+SFqhuO8f6VVV1PFMJ/uyHWe7Np3CqD+xhKZRVGgIdVmyXS81cXb\nxcI85F3356TBQ6TQgHWxy5OFs9aOX06m1Xcpp1atSuQIP8uoGJqUGHN7gQoN8jDd\n+kRvp629AgMBAAECggEAAlixjSDxgGNaeR1O3+yecduaFZrWtr6810VzsGvsQphb\nIz8FgAjwKSY3DNurh3x2vgsuySWeELRCUWt5CEoytBEImGOgbRRvWftQVN+Q1Dl4\n282cLbAtkk0N4PwV2p3GtMwmXBqBghPWvV89mbHxzrlsZtGrqTJ7kJwwpp3mboUT\nXEA6g0OTp/az6QcwHBNHCSGv9mi/75e15qDIBW9f70r+aXs1FXwFNkiGw63Pm0mu\nXymX0SgWTd+Rhrbysd7cFgjxeJqoT8scRkx8gf/FDO7SlLdlKwtwaVwsZ6ncBM5U\n3lOINTklUFNfycvglpS8NrP9F7g8WAlypxTXe2iaIwKBgQDQVarIZtYwH83x5PV7\njVWy+VaXf7tD1KKUifQdAio9vOCugpb9GSfpvI213uY7RXcSFOBrtf4fbZ4srioc\nNnyqdnPIaY2Kn4Z5zx4pCqa4WAH4E7vl72RuWMYJOpBN1DiHW0D0VNK37ZVO+2/O\nNjCp7h/B/YitaWGEIpW7tKewrwKBgQDGf0yX36eqCTvR+5k8D2DO1wPgEfXBjQoK\nvEoBIqvV+Dv7UjWskzIaDbbbIsvtpL/7IukkxBfWfBpiCBR+JGuSgiMtg+kWW0Cl\nhyWZFN7C/h9+4Wfi7B02BuqJrk46FIQNpT4sBYMUyXFLXmJHlwY7grJtQAPwl4X6\nVICURiQrUwKBgQCKMunRenZHAjIJbopxZTYePUx1vyOoQVuAEWs/+vmubqbU3Ifw\naUmSwaN3q98qHlB4TCT7DoT+sCanGPmSMYrNQTpZDbv44w2/q+cj7o7d5nOX7u9L\n/luu33CvGowzNL4y/BPAgKwvmojbFev67POnJfEnLFoIPsmTb6XIGHTMvQKBgQDD\nGVYQJI0oTIEWiAP6C2dshdvSPfTec6D+IkleylQ5MA7Mm+YTpG3nO7mRs6bbAkaM\nMakUMQT5FOvdlPGHdoag7vZigzfzeGeXCrnCt8enwpz0WdqBKPAhLTUTdFaBMa8F\ntnfgTt6i7MhFexSAJwnCLljvlq8Ip/XQsYPbuQFN7wKBgQCZEzks+T3xjt9rWaHL\n/duidHVgaocNo2+3Ve+2qUX3zzfC5YSwwkSYyxHTyFRBCjk6G9YmwktX/gTDKsmR\nVVv5o3y5o42yL14xDceU+x7v9SE0D9FZeMziYr2g9Xur5FBvtFj1Fa6R5bhnvcKT\nCmC3C+xn5qLSyZdW6f6lfRrvCw==\n-----END PRIVATE KEY-----\n",
+  "private_key_id": "30a4b6b457445f5edf17b469e6c483e235f9b266",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDSO8ILt+wjtF1r\ne7yS9/XcdqcaAeZxE0IX15zsU3fSGXYRteYs+3ueNyUja1ya7BPs6UZli9dQqfHx\nP/wbxPGlOgkGYyLWt2SmtqQyjPprfVuP20WoOPBAXgudfuGjKh27ATDK3E6+G3l4\nd5PV+Vnl9uYqpKzF4J1rSATgKfc+aMsiGHsH94DEmQVf5EyB5G1wsljzvJ2ok222\nzwamYiDnZ5D/tB1ZHY8YYSLqoIZs0BkG2U3QU1uaq7XpN/cyX92z0bg0F7LdrA18\nmq24agv0U0esd0aNZUXgTHlhbrg75/AgOAJCaiyWTk+xUjzlT2ZeKbUmUAp6BFqj\nA/M2jUaFAgMBAAECggEAEAPDWAyDrYNGK946KDaWq7D827X8rZfE93dSRI0QhJhc\nmSQdIPIV9vXGcM3zOPig2pw5OO+6etznSZ8RKmBfSVyEEXt9zOjIKbb3XRkbfmgH\nOzcoiumuIN5zzg87Sv2gqX0sEAKmRkRmMBoT0JSfwi0uWAiWrLWGkwSNHTJf24i7\n6Y5D0AmdXr3grz9Wegoe+PcljtkSb1GuhQIK0ufD6SFrDUwuCJhCvua0cPAYG9dE\noyosNEryDqWwqyK4kirANdx1zoEH1CJwOWFzZsMPRAgaOdZ6sWDsbHN69hcOkEMH\nGJzUdqWFFBxofFgLswrJCIc/vAfNCC5XdAHNkRjEgQKBgQD+gBFAGIZs+9qCco4d\nJNSfB3HCSK1/x36cc0RA0VdpovWayJG38jeKncNV/It3Titb7+LwFoOcNVbt5NgJ\n8Dt7hRP5s22WIbq8MdEk8v1627q3L/NnouXAnFPoHWUgls4owZuu0M4J4OeGWrEN\nLpufXhEgIO5MhRfaEYMpe8tUYQKBgQDTeOkpfC374xsU6TL0ImtsacsMVfj76aft\nT+N1kRWlzcUBt2Mtn1L3lSfXlIFXDMMa8QsDMfd822eVmh9dbXTAgP3thuUICxYI\nIHcBAjeGsuz9cH8xvP/dMGvwt6K6ZT7eewF16avOhyysnjRWM8wYvVEYQ0yGzIgD\nzoLyS8pkpQKBgDUiofdi53YLo1SG/FrjXK0TTdIFgIvkJ/AcNMzfqEN67ZJye9IO\n9T+wrp7eSnQPUwgv7o639KSBknO6ysxQZurkHwaMSr4ErssqD4OKZBfplnM2xLgH\nj7aGLRKSSJHkSojB23JFUC9J0K0BdGPPLli4uBSgK4C4bQFvlJXtrcchAoGADc9/\nqq3pcuHKCvuP0FHPIi1mjU+wCwOfa+gjurHW8BUYIJyRZZFaIcEj8PhJ2h2DQGct\niO/icc0CXsrJ8ZgMX+YMr0539qaCsdUs8GvspGdbAtIt/FmTfCaFZhsYDYQ/Lthp\nqAGyrrI1QLC0Skznr1Xtzd/XR5Zj65u5AYnhleECgYAUxW5w8oj+P25b6wXNK5dJ\n4iDJnGEAPiCjsAkpG0bfVkAc94mosL84ruNubIYyyDoCA2GPm/L1BVH2WImi/GWl\nlvXrjlafbEM6S9IHY9CRn8VLJrfIXDMpRWiVeHmUaZhWjZYEDrpBXt4B8NXg2Qpi\nyyRvhe/Ye4h8Lr/8vbXffA==\n-----END PRIVATE KEY-----\n",
   "client_email": "dunava-database@dunava-database.iam.gserviceaccount.com",
   "client_id": "117021163158761479529",
   "auth_uri": "https://accounts.google.com/o/oauth2/auth",
@@ -90,6 +92,9 @@ class DunavaDatabaseState extends State<DunavaDatabase>
   String _loadingProgress = "";
   AnimationController spinRefresh;
 
+  bool currentOnly = false;
+  bool excludeW = false;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -147,93 +152,184 @@ class DunavaDatabaseState extends State<DunavaDatabase>
 
   void _getSharedPrefs() {
     SharedPreferences.getInstance().then((prefs) {
+      if (!prefs.getKeys().contains("excludeW"))
+        prefs.setBool('excludeW', false);
+      if (!prefs.getKeys().contains("currentOnly"))
+        prefs.setBool('currentOnly', false);
+
+      excludeW = prefs.getBool("excludeW");
+      currentOnly = prefs.getBool("currentOnly");
+      print('$excludeW, $currentOnly');
       var json = new JsonDecoder();
-      if (prefs.getKeys().length != 3) {
+      if (!prefs.getKeys().containsAll(["people", "data"])) {
         _refreshData();
       } else {
         database = json.convert(prefs.getString("data"));
+        if (database["schemaVersion"] != databaseVersion) return _refreshData();
         people = json.convert(prefs.getString("people"));
       }
     });
   }
 
   void _calculateCombos() {
+    var results = [];
+    doSongW(song) {
+      //print("\n\nDoing ${song["name"]}");
+      var arrays = song["singers"].map((s) {
+        var p = [s["parts"], s["wParts"]].expand((i) => i).toList();
+        if (!selectedPeople.map((p) => people[p]).contains(s["name"]) ||
+            p.length == 0) {
+          return [null];
+        } else {
+          return p;
+        }
+      }).toList();
+      //print(arrays);
+      var perms = cartesianProduct(arrays);
+      //print("Initial $perms");
+      perms = perms.where((perm) {
+        var canSing = true;
+        if (song["parts"].length == 0) canSing = false;
+        for (var part in song["parts"]) {
+          //print('$part: ${perm.contains(part)}');
+          if (!perm.contains(part)) {
+            canSing = false;
+            break;
+          }
+        }
+        //print(canSing);
+        return canSing;
+      });
+      //print("Final $perms");
+      return perms.toList();
+    }
+
+    doSong(song) {
+      //print("\n\nDoing ${song["name"]}");
+      var arrays = song["singers"].map((s) {
+        if (s["parts"].length == 0 ||
+            !selectedPeople.map((p) => people[p]).contains(s["name"])) {
+          return [null];
+        } else {
+          return s["parts"];
+        }
+      }).toList();
+      var perms = cartesianProduct(arrays);
+      //print("Initial $perms");
+      perms = perms.where((perm) {
+        var canSing = true;
+        if (song["parts"].length == 0) canSing = false;
+        for (var part in song["parts"]) {
+          //print('$part: ${perm.contains(part)}');
+          if (!perm.contains(part)) {
+            canSing = false;
+            break;
+          }
+        }
+        //print(canSing);
+        return canSing;
+      });
+      //print("Final $perms");
+      return perms.toList();
+    }
+
+    database["songs"]
+        .where((song) => !currentOnly || song["current"])
+        .forEach((song) {
+      if (!song["multi"]) {
+        var perms = doSong(song);
+        if (perms.length > 0) {
+          results.add({
+            "name": song["name"],
+            "details": "",
+            "song": song,
+            "perms": perms,
+            "w": false
+          });
+        } else if (!excludeW) {
+          perms = doSongW(song);
+          if (perms.length > 0) {
+            results.add({
+              "name": song["name"],
+              "details": "*",
+              "song": song,
+              "perms": perms,
+              "w": true
+            });
+          }
+        }
+      } else {
+        bool canSing = true;
+        bool w = false;
+        var permsMap = {};
+        for (var i in song["sections"].keys) {
+          var perms = doSong(song["sections"][i]);
+          if (perms.length == 0) {
+            if (!excludeW) {
+              perms = doSongW(song["sections"][i]);
+              if (perms.length == 0) {
+                canSing = false;
+                break;
+              } else {
+                w = true;
+              }
+            } else {
+              canSing = false;
+              break;
+            }
+          }
+          permsMap[i] = perms;
+        }
+        if (canSing) {
+          results.add({
+            "name": "${song["name"]}",
+            "details": "${w ? "* | " : ""}${song["sections"].length} sections",
+            "song": song,
+            "perms": permsMap,
+            "w": w
+          });
+        }
+      }
+    });
+
+    results.sort((a, b) {
+      if (a["w"]) return 1;
+      if (b["w"]) return -1;
+      return 0;
+    });
+    var notW = true;
+    final List<List<Widget>> tiles = results.map(
+      (song) {
+        List<Widget> r = [];
+
+        if (song["w"] && notW) {
+          notW = false;
+          r.add(new Divider());
+        }
+
+        if (song["details"] == "")
+          r.add(new ListTile(
+              title: new Text(song["name"]),
+              trailing: new Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                _showSongDetails(song);
+              }));
+        else
+          r.add(new ListTile(
+              title: new Text(song["name"]),
+              subtitle: new Text(song["details"]),
+              trailing: new Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                _showSongDetails(song);
+              }));
+        return r;
+      },
+    ).toList();
+    final List<Widget> divided = tiles.expand((i) => i).toList();
+
     Navigator.of(context).push(
       new MaterialPageRoute(
         builder: (context) {
-          var results = [];
-          doSong(song) {
-            print("\n\nDoing ${song["name"]}");
-            var arrays = song["singers"].map((s) {
-              if (s["parts"].length == 0 ||
-                  !selectedPeople.map((p) => people[p]).contains(s["name"])) {
-                return [null];
-              } else {
-                return s["parts"];
-              }
-            }).toList();
-            var perms = cartesianProduct(arrays);
-            print("Initial $perms");
-            perms = perms.where((perm) {
-              var canSing = true;
-              if (song["parts"].length == 0) canSing = false;
-              for (var part in song["parts"]) {
-                print('$part: ${perm.contains(part)}');
-                if (!perm.contains(part)) {
-                  canSing = false;
-                  break;
-                }
-              }
-              print(canSing);
-              return canSing;
-            });
-            print("Final $perms");
-            return perms.toList();
-          }
-
-          parsePerm(perm) {
-            int i = -1;
-            perm = perm.map((part) {
-              i++;
-              return {"name": people.values.elementAt(i), "part": part};
-            });
-            perm = perm.where((part) => part["part"] != null);
-            perm = perm.map((part) => "${part["name"]}: ${part["part"]}");
-            return perm.join(", ");
-          }
-
-          database["songs"].forEach((song) {
-            if (!song["multi"]) {
-              var perms = doSong(song);
-              if (perms.length > 0) {
-                results.add(
-                    {"name": song["name"], "details": parsePerm(perms[0])});
-              }
-            } else {
-              song["sections"].forEach((name, section) {
-                var perms = doSong(section);
-                if (perms.length > 0) {
-                  results.add(
-                      {"name": "${song["name"]}: $name", "details": parsePerm(perms[0])});
-                }
-              });
-            }
-          });
-          final tiles = results.map(
-            (song) {
-              return new ListTile(
-                title: new Text(song["name"]),
-                subtitle: new Text(song["details"]),
-              );
-            },
-          );
-          final divided = ListTile
-              .divideTiles(
-                context: context,
-                tiles: tiles,
-              )
-              .toList();
-
           return new Scaffold(
             appBar: new AppBar(
               title: new Text('songs for this combo'),
@@ -243,6 +339,223 @@ class DunavaDatabaseState extends State<DunavaDatabase>
         },
       ),
     );
+  }
+
+  void _showSongDetails(song) {
+    _fixColumns(List<Widget> columns) {
+      var m = 0;
+      columns
+          .map((c) => (c as Column).children.length)
+          .forEach((l) => m = l > m ? l : m);
+      columns = columns.map((c) {
+        var l = (c as Column).children.length;
+        if (l < m) {
+          (c as Column).children.addAll(new List.filled(
+              m - l,
+              new Container(
+                  padding: const EdgeInsets.all(5.0), child: new Text(''))));
+        }
+        return (c as Column);
+      }).toList();
+      return columns;
+    }
+
+    parsePerm(perm, song) {
+      //print(perm);
+      int i = -1;
+      perm = perm.map((part) {
+        i++;
+        String name = people.values.elementAt(i);
+        var s = song["singers"].firstWhere((s) => s["name"] == name);
+        return {"name": name, "part": part, "w": !s["parts"].contains(part)};
+      });
+      perm = perm.where((part) => part["part"] != null);
+      return perm;
+    }
+
+    if (song["song"]["multi"]) {
+      var perms = song["perms"];
+      song = song["song"];
+      Navigator.of(context).push(
+        new MaterialPageRoute(
+          builder: (context) {
+            var sections = <Map<String, Widget>>[];
+            for (var sec in song["sections"].keys) {
+              var section = song["sections"][sec];
+              //print(section);
+              List<Widget> columns = [];
+              List<Widget> rightColumns = [];
+              for (var part in section["parts"]) {
+                var header = new Container(
+                    child: new Text(part,
+                        style: new TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16.0)),
+                    padding: const EdgeInsets.all(5.0));
+                List<Widget> children = <Widget>[header];
+                List<Widget> rightChildren = <Widget>[header];
+                List news = parsePerm(perms[sec][0], section)
+                    .where((p) => p["part"] == part)
+                    .map((p) => {"text": p["name"], "w": p["w"]})
+                    .toList();
+                List rightNews = section["singers"]
+                    .where((s) =>
+                        selectedPeople
+                                .map((p) => people[p])
+                                .contains(s["name"]) &&
+                            s["parts"].contains(part) ||
+                        s["wParts"].contains(part))
+                    .map((p) =>
+                        {"text": p["name"], "w": !p["parts"].contains(part)})
+                    .toList();
+                children.addAll(news.map((a) => new CrossOffText(
+                    text: a["text"],
+                    highlight: a["w"],
+                    padding: const EdgeInsets.all(5.0))));
+                rightChildren.addAll(rightNews.map((a) => new CrossOffText(
+                    text: a["text"],
+                    highlight: a["w"],
+                    padding: const EdgeInsets.all(5.0))));
+                //print(children);
+                //children.addAll(news);
+                columns.add(new Column(children: children));
+                rightColumns.add(new Column(children: rightChildren));
+              }
+              columns = _fixColumns(columns);
+              rightColumns = _fixColumns(rightColumns);
+              var header = new Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: new RichText(
+                      textAlign: TextAlign.center,
+                      text: new TextSpan(
+                          text: '${sec.length < 2 ? "Section" : ""} $sec',
+                          style: new TextStyle(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24.0),
+                          children: [
+                            new TextSpan(
+                                text:
+                                    '${section["details"] == "" ? "" : "\r\n"}${section["details"]}',
+                                style: new TextStyle(fontSize: 20.0))
+                          ])));
+              sections.add({
+                "left": new Column(children: <Widget>[
+                  header,
+                  new Row(
+                    children: columns,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                  )
+                ]),
+                "right": new Column(children: <Widget>[
+                  header,
+                  new Row(
+                    children: rightColumns,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                  )
+                ])
+              });
+            }
+            return new Scaffold(
+              appBar: new AppBar(
+                title: new Text('${song["name"]}'),
+              ),
+              body: new Scrollbar(
+                  child: new ListView(
+                      children: sections
+                          .map((s) => [
+                                new DualPanel(
+                                    left: s["left"], right: s["right"]),
+                                new Divider(color: Colors.grey)
+                              ])
+                          .expand((i) => i)
+                          .toList())),
+            );
+          },
+        ),
+      );
+    } else {
+      var perms = song["perms"];
+
+      song = song["song"];
+      Navigator.of(context).push(
+        new MaterialPageRoute(
+          builder: (context) {
+            List<Widget> columns = [];
+            List<Widget> rightColumns = [];
+            for (var part in song["parts"]) {
+              var header = new Container(
+                  child: new Text(part,
+                      style: new TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16.0)),
+                  padding: const EdgeInsets.all(5.0));
+              List<Widget> children = <Widget>[header];
+              List<Widget> rightChildren = <Widget>[header];
+              List news = parsePerm(perms[0], song)
+                  .where((p) => p["part"] == part)
+                  .map((p) => {"text": p["name"], "w": p["w"]})
+                  .toList();
+              List rightNews = song["singers"]
+                  .where((s) =>
+                      selectedPeople
+                              .map((p) => people[p])
+                              .contains(s["name"]) &&
+                          s["parts"].contains(part) ||
+                      s["wParts"].contains(part))
+                  .map((p) =>
+                      {"text": p["name"], "w": !p["parts"].contains(part)})
+                  .toList();
+              children.addAll(news.map((a) => new CrossOffText(
+                  text: a["text"],
+                  highlight: a["w"],
+                  padding: const EdgeInsets.all(5.0))));
+              rightChildren.addAll(rightNews.map((a) => new CrossOffText(
+                  text: a["text"],
+                  highlight: a["w"],
+                  padding: const EdgeInsets.all(5.0))));
+              //print(children);
+              //children.addAll(news);
+              columns.add(new Column(children: children));
+              rightColumns.add(new Column(children: rightChildren));
+            }
+            columns = _fixColumns(columns);
+            rightColumns = _fixColumns(rightColumns);
+            var header = new Container(
+                padding: const EdgeInsets.all(8.0),
+                child: new RichText(
+                    textAlign: TextAlign.center,
+                    text: new TextSpan(
+                        text: '${song["details"]}',
+                        style: new TextStyle(fontSize: 20.0))));
+            Map<String, Widget> section = {
+              "left": new Column(children: <Widget>[
+                header,
+                new Row(
+                  children: columns,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                )
+              ]),
+              "right": new Column(children: <Widget>[
+                header,
+                new Row(
+                  children: rightColumns,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                )
+              ])
+            };
+            return new Scaffold(
+                appBar: new AppBar(
+                  title: new Text('${song["name"]}'),
+                ),
+                body: new ListView(children: [
+                  new DualPanel(left: section["left"], right: section["right"])
+                ]));
+          },
+        ),
+      );
+    }
   }
 
   _launchURL() async {
@@ -261,7 +574,7 @@ class DunavaDatabaseState extends State<DunavaDatabase>
             new SwitchListTile(
                 value: Theme.of(context).brightness == Brightness.dark,
                 title: new Text(
-                    "Enable ${Theme.of(context).brightness == Brightness.dark ? "Light" : "Dark"} Mode"),
+                    "${Theme.of(context).brightness == Brightness.dark ? "Dark" : "Light"} Mode"),
                 activeColor: Theme.of(context).accentColor,
                 onChanged: (bool value) {
                   setState(() {
@@ -269,6 +582,38 @@ class DunavaDatabaseState extends State<DunavaDatabase>
                         Theme.of(context).brightness == Brightness.dark
                             ? Brightness.light
                             : Brightness.dark);
+                  });
+                }),
+            new SwitchListTile(
+                title: new Text(
+                    "${currentOnly ? "Current Repertoire Only" : "Full Repertoire"}"),
+                activeColor: Theme.of(context).accentColor,
+                value: currentOnly,
+                onChanged: (bool value) {
+                  setState(() {
+                    currentOnly = value;
+                    SharedPreferences.getInstance().then((prefs) {
+                      prefs.setBool("currentOnly", currentOnly);
+                    });
+                    DynamicTheme
+                        .of(context)
+                        .setBrightness(Theme.of(context).brightness);
+                  });
+                }),
+            new SwitchListTile(
+                title: new Text(
+                    "${excludeW ? "Exclude" : "Include"} tentative parts"),
+                value: excludeW,
+                activeColor: Theme.of(context).accentColor,
+                onChanged: (bool value) {
+                  setState(() {
+                    excludeW = value;
+                    SharedPreferences.getInstance().then((prefs) {
+                      prefs.setBool("excludeW", excludeW);
+                    });
+                    DynamicTheme
+                        .of(context)
+                        .setBrightness(Theme.of(context).brightness);
                   });
                 }),
             new ListTile(
@@ -325,14 +670,6 @@ class DunavaDatabaseState extends State<DunavaDatabase>
                 padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
               )))
     ]);
-  }
-
-  Future<Null> _handleRefresh() {
-    final Completer<Null> completer = new Completer<Null>();
-    new Timer(const Duration(seconds: 3), () {
-      completer.complete(null);
-    });
-    return completer.future.then((_) {});
   }
 
   Widget _buildListItem(String person) {
@@ -433,12 +770,24 @@ class DunavaDatabaseState extends State<DunavaDatabase>
           _loading = false;
         });
         showDialog(
+            barrierDismissible: false,
             context: context,
             builder: (BuildContext context) {
               return new AlertDialog(
-                title: new Text("Connection Error"),
-                content: new Text("${data["data"]}"),
-              );
+                  title: new Text("Connection Error"),
+                  content: new Text("${data["data"]}"),
+                  actions: <Widget>[
+                    new FlatButton(
+                      child: new Text("OKAY"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        SharedPreferences.getInstance().then((prefs) {
+                          if (!prefs.getKeys().containsAll(["people", "data"]))
+                            _refreshData();
+                        });
+                      },
+                    )
+                  ]);
             });
       } else if (data["type"] == "done") {
         receivePort.close();
@@ -454,9 +803,16 @@ class DunavaDatabaseState extends State<DunavaDatabase>
           people = l[0];
           database = l[1];
         });
-        return;
       }
     }
+    if (_loading) {
+      setState(() {
+        _loadingProgress = "";
+        _loading = false;
+      });
+      _refreshData();
+    }
+
     // SharedPreferences.getInstance().then((prefs) {
     //   var json = new JsonEncoder();
     //   prefs.setString("data", json.convert(l[1]));
@@ -503,12 +859,12 @@ _pullFromSpreadsheet(SendPort sendPort) async {
       dynamic cells = parsed.findAllElements("gs:cell");
       cells = cells.map((cell) => new DunavaCell(cell.getAttribute("row"),
           cell.getAttribute("col"), cell.children[0]));
-      var database = {"songs": []};
+      Map database = {"songs": [], "schemaVersion": databaseVersion};
       var singerNames = {};
       cells
           .where((c) =>
               c.row == 2 &&
-              c.col > 2 &&
+              c.col > 4 &&
               (new RegExp("^[A-Z]{2}\$")).hasMatch(c.value))
           .forEach((c) {
         singerNames[c.col] = c.value;
@@ -527,7 +883,21 @@ _pullFromSpreadsheet(SendPort sendPort) async {
           songName = song[0];
           songSection = song[1];
         }
-
+        sendPort.send({"type": "progress", "data": "$song: Getting details"});
+        var details = cells.where((c) => c.row == cell.row && c.col == 3);
+        if (details.length == 0) {
+          details = "";
+        } else {
+          details = details.first.value;
+        }
+        sendPort
+            .send({"type": "progress", "data": "$song: Getting current-ness"});
+        var current = cells.where((c) => c.row == cell.row && c.col == 4);
+        if (current.length == 0) {
+          current = false;
+        } else {
+          current = true;
+        }
         sendPort.send({"type": "progress", "data": "$song: Getting parts"});
         var partsCell = cells.where((c) => c.row == cell.row && c.col == 2);
         List<String> parts;
@@ -545,7 +915,7 @@ _pullFromSpreadsheet(SendPort sendPort) async {
         });
 
         sendPort.send(
-            {"type": "progress", "data": "$song: Normalizing singer parts"});
+            {"type": "progress", "data": "$song: Converting singer parts"});
         singerParts.forEach((col, part) {
           if (part.length > 0) {
             part = part.first;
@@ -558,12 +928,38 @@ _pullFromSpreadsheet(SendPort sendPort) async {
             singerParts[col] = [];
           }
         });
-        //print(singerParts);
+
+        sendPort.send(
+            {"type": "progress", "data": "$song: Getting singer W parts"});
+        var wSingerParts = {};
+        singerNames.forEach((col, _) {
+          wSingerParts[col] =
+              cells.where((c) => c.col == col + 1 && c.row == cell.row);
+        });
+
+        sendPort.send(
+            {"type": "progress", "data": "$song: Converting singer W parts"});
+        wSingerParts.forEach((col, part) {
+          if (part.length > 0) {
+            part = part.first;
+            if (part.value == "0") {
+              wSingerParts[col] = [];
+            } else {
+              wSingerParts[col] = part.value.split(new RegExp(", *"));
+            }
+          } else {
+            wSingerParts[col] = [];
+          }
+        }); //print(singerParts);
 
         var singers = [];
 
         singerNames.forEach((col, name) {
-          singers.add({"name": name, "parts": singerParts[col]});
+          singers.add({
+            "name": name,
+            "parts": singerParts[col],
+            "wParts": wSingerParts[col]
+          });
         });
 
         sendPort.send(
@@ -571,22 +967,33 @@ _pullFromSpreadsheet(SendPort sendPort) async {
         if (database["songs"].map((s) => s["name"]).contains(songName)) {
           var existingSong =
               database["songs"].firstWhere((s) => s["name"] == songName);
-          existingSong["sections"]
-              [songSection] = {"parts": parts, "singers": singers};
+          existingSong["sections"][songSection] = {
+            "parts": parts,
+            "singers": singers,
+            "details": details
+          };
+          existingSong["current"] = current || existingSong["current"];
         } else {
           if (!multi) {
             database["songs"].add({
               "name": song,
               "parts": parts,
               "multi": false,
-              "singers": singers
+              "singers": singers,
+              "details": details,
+              "current": current
             });
           } else {
             database["songs"].add({
               "name": songName,
               "multi": true,
+              "current": current,
               "sections": {
-                songSection: {"parts": parts, "singers": singers}
+                songSection: {
+                  "parts": parts,
+                  "singers": singers,
+                  "details": details
+                }
               }
             });
           }
@@ -598,6 +1005,10 @@ _pullFromSpreadsheet(SendPort sendPort) async {
         "type": "done",
         "data": [people, database]
       });
+      print(database);
+    }).catchError((err) {
+      print(err);
+      sendPort.send({"type": "error", "data": err});
     });
   }).catchError((err) {
     print(err);
