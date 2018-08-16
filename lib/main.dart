@@ -1,39 +1,29 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import "package:http/http.dart" as http;
 import "package:xml/xml.dart" as xml;
 import 'dart:convert';
 import 'dart:isolate';
+import 'dart:core';
+import 'dart:math';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'modal_progress_hud.dart';
 import 'cross_off_text.dart';
 import 'dual_panel.dart';
+import 'package:encrypt/encrypt.dart';
+import 'package:screen/screen.dart';
+import 'package:vibrate/vibrate.dart';
 
 void main() => runApp(new DunavaApp());
 
-final String databaseVersion = '1.0';
+ServiceAccountCredentials credentials;
 
+final String databaseVersion = '2.0';
 final String spreadsheetUrl =
     'https://docs.google.com/spreadsheets/d/13WlZBIQodwZuu4olBTR3UlQJfw06JZ3KWuwQ9Ig9qBE/';
-
-final ServiceAccountCredentials _credentials =
-    new ServiceAccountCredentials.fromJson(r'''
-{
-  "type": "service_account",
-  "project_id": "dunava-database",
-  "private_key_id": "30a4b6b457445f5edf17b469e6c483e235f9b266",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDSO8ILt+wjtF1r\ne7yS9/XcdqcaAeZxE0IX15zsU3fSGXYRteYs+3ueNyUja1ya7BPs6UZli9dQqfHx\nP/wbxPGlOgkGYyLWt2SmtqQyjPprfVuP20WoOPBAXgudfuGjKh27ATDK3E6+G3l4\nd5PV+Vnl9uYqpKzF4J1rSATgKfc+aMsiGHsH94DEmQVf5EyB5G1wsljzvJ2ok222\nzwamYiDnZ5D/tB1ZHY8YYSLqoIZs0BkG2U3QU1uaq7XpN/cyX92z0bg0F7LdrA18\nmq24agv0U0esd0aNZUXgTHlhbrg75/AgOAJCaiyWTk+xUjzlT2ZeKbUmUAp6BFqj\nA/M2jUaFAgMBAAECggEAEAPDWAyDrYNGK946KDaWq7D827X8rZfE93dSRI0QhJhc\nmSQdIPIV9vXGcM3zOPig2pw5OO+6etznSZ8RKmBfSVyEEXt9zOjIKbb3XRkbfmgH\nOzcoiumuIN5zzg87Sv2gqX0sEAKmRkRmMBoT0JSfwi0uWAiWrLWGkwSNHTJf24i7\n6Y5D0AmdXr3grz9Wegoe+PcljtkSb1GuhQIK0ufD6SFrDUwuCJhCvua0cPAYG9dE\noyosNEryDqWwqyK4kirANdx1zoEH1CJwOWFzZsMPRAgaOdZ6sWDsbHN69hcOkEMH\nGJzUdqWFFBxofFgLswrJCIc/vAfNCC5XdAHNkRjEgQKBgQD+gBFAGIZs+9qCco4d\nJNSfB3HCSK1/x36cc0RA0VdpovWayJG38jeKncNV/It3Titb7+LwFoOcNVbt5NgJ\n8Dt7hRP5s22WIbq8MdEk8v1627q3L/NnouXAnFPoHWUgls4owZuu0M4J4OeGWrEN\nLpufXhEgIO5MhRfaEYMpe8tUYQKBgQDTeOkpfC374xsU6TL0ImtsacsMVfj76aft\nT+N1kRWlzcUBt2Mtn1L3lSfXlIFXDMMa8QsDMfd822eVmh9dbXTAgP3thuUICxYI\nIHcBAjeGsuz9cH8xvP/dMGvwt6K6ZT7eewF16avOhyysnjRWM8wYvVEYQ0yGzIgD\nzoLyS8pkpQKBgDUiofdi53YLo1SG/FrjXK0TTdIFgIvkJ/AcNMzfqEN67ZJye9IO\n9T+wrp7eSnQPUwgv7o639KSBknO6ysxQZurkHwaMSr4ErssqD4OKZBfplnM2xLgH\nj7aGLRKSSJHkSojB23JFUC9J0K0BdGPPLli4uBSgK4C4bQFvlJXtrcchAoGADc9/\nqq3pcuHKCvuP0FHPIi1mjU+wCwOfa+gjurHW8BUYIJyRZZFaIcEj8PhJ2h2DQGct\niO/icc0CXsrJ8ZgMX+YMr0539qaCsdUs8GvspGdbAtIt/FmTfCaFZhsYDYQ/Lthp\nqAGyrrI1QLC0Skznr1Xtzd/XR5Zj65u5AYnhleECgYAUxW5w8oj+P25b6wXNK5dJ\n4iDJnGEAPiCjsAkpG0bfVkAc94mosL84ruNubIYyyDoCA2GPm/L1BVH2WImi/GWl\nlvXrjlafbEM6S9IHY9CRn8VLJrfIXDMpRWiVeHmUaZhWjZYEDrpBXt4B8NXg2Qpi\nyyRvhe/Ye4h8Lr/8vbXffA==\n-----END PRIVATE KEY-----\n",
-  "client_email": "dunava-database@dunava-database.iam.gserviceaccount.com",
-  "client_id": "117021163158761479529",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://accounts.google.com/o/oauth2/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dunava-database%40dunava-database.iam.gserviceaccount.com"
-}
-''');
 
 class DunavaCell {
   int row;
@@ -91,7 +81,6 @@ class DunavaDatabaseState extends State<DunavaDatabase>
   bool _loading = false;
   String _loadingProgress = "";
   AnimationController spinRefresh;
-
   bool currentOnly = false;
   bool excludeW = false;
 
@@ -159,7 +148,6 @@ class DunavaDatabaseState extends State<DunavaDatabase>
 
       excludeW = prefs.getBool("excludeW");
       currentOnly = prefs.getBool("currentOnly");
-      print('$excludeW, $currentOnly');
       var json = new JsonDecoder();
       if (!prefs.getKeys().containsAll(["people", "data"])) {
         _refreshData();
@@ -400,10 +388,10 @@ class DunavaDatabaseState extends State<DunavaDatabase>
                 List rightNews = section["singers"]
                     .where((s) =>
                         selectedPeople
-                                .map((p) => people[p])
-                                .contains(s["name"]) &&
-                            s["parts"].contains(part) ||
-                        s["wParts"].contains(part))
+                            .map((p) => people[p])
+                            .contains(s["name"]) &&
+                        (s["parts"].contains(part) ||
+                            s["wParts"].contains(part)))
                     .map((p) =>
                         {"text": p["name"], "w": !p["parts"].contains(part)})
                     .toList();
@@ -497,13 +485,14 @@ class DunavaDatabaseState extends State<DunavaDatabase>
                   .where((p) => p["part"] == part)
                   .map((p) => {"text": p["name"], "w": p["w"]})
                   .toList();
+
+              print(selectedPeople.map((p) => people[p]));
               List rightNews = song["singers"]
                   .where((s) =>
                       selectedPeople
-                              .map((p) => people[p])
-                              .contains(s["name"]) &&
-                          s["parts"].contains(part) ||
-                      s["wParts"].contains(part))
+                          .map((p) => people[p])
+                          .contains(s["name"]) &&
+                      (s["parts"].contains(part) || s["wParts"].contains(part)))
                   .map((p) =>
                       {"text": p["name"], "w": !p["parts"].contains(part)})
                   .toList();
@@ -731,6 +720,88 @@ class DunavaDatabaseState extends State<DunavaDatabase>
     setState(() {
       _loading = true;
     });
+    Screen.keepOn(true);
+    void _doDecrypt(String _encryptionKey) async {
+      String encryptionKey = _encryptionKey
+          .substring(0, min(_encryptionKey.length, 32))
+          .padRight(32);
+
+      final encrypter = new Encrypter(new AES(encryptionKey));
+      var text =
+          '8d2bf9375d6fd7b9dbeeb89e1fb80fc7e367e4eb77e8ef718b8d6360612629ad1669de11fc96cc292cdb4ba979476f895226af08099fd10c885527d610101e1a5c7d7a96d02bc85570bb510b98ec18570512534334d4a386269e5fba65d03cdb4d3d2f5cab8416447fc5e861efcaebb66bdfc0d93b3a996d7d09d41c44486900f8efc2cc60de352042b1063cb66cf34942f26d81a990eb57ff655a2e8b636a796b107ce297e85416720d4881359c74f935b8c436fc797dd0275d566d15699e1a2556f18d1e4f8ec3d78e37a8b4fdf43f37dbcd4b3675758f5b2866616e43adec0c5350e95106328397692f10d199a3712262ec4daac3724c8e9c1e92bcb34c73aa44ca3a6d85f4624737c1ea8c939c75e692be4c5bc7676eb40e001827cb66564ac380f1bd71d9ba793441dbea672f7c35c2f063c60c2229bf8a702d88191cb9a5817dee214b877cd6c11cf2a2f79c7925cd206f1d3685241db5daf8933347139d84dce6a7045bd6ae3c5bdcbc7a8c336bb4ed4a0a5398ce9ac249a5c76c60cbc3dcbf1a8b100cead89a6f8dd964d61126db5eed911d3f994330f4c51e49ddb243991dbe5dc2191021a6c297311fdcb8da3693ed64c5eb243854fe851d00b1a5bdf7ab20d75ed5714e14e6b51b398dc4120c8f86cad45b409cced00498022697a0f5e97a62698ddc6057fa8be45f626ca82a5dcee70c0fcc3a437eeb4e7dfbe4642490e3c5824e903c80de47d2fa63ec65f9eb15def8495f8956857722682c9979c23d6dc845da61dfaa8c9a182f6d94bbb42a30ef535eff6a257ef92b8c2114d379214015b9449ef97c58d5f7a5d91a0eca51a4f834b22df2a0c3310ef3e3eae6fddd157669d8c3bb65324ed0a3b9f6f4a2b4780bdb636b6fc064e61272811fa7d3b21880e2c9d3bf5b1e3e9b704dd9c613d98462c96d54566e2e07713624d84a6ba161ee964984f86a8c0df427c6a5d561afe0434d0494f2b42c772ab9199f800c0d52b109944b2159796d2bf59f0693c686f36e2c8c7ab97d2b07ad1f9210bfc9cb50160583527e363ab5a069458d8c3d7de53e2569e32413dbe87c61e41badde91e972db234cbe1644d1f31c27b3c9356ce02621485b93dd5821ebe5770910afcc7e6af11b4530107bfc28d4f515ae5eb697b2b8cdbeecc0252c38a6bf98768a4ac4f7b34b8afe5d121df8fcdd24df308851a654c9ddee66533b18ee649cfada8db2cd63591cf8ad1e284912ad4240e1b48c23942d86f96ba9faf10fb5f06c7acf65c0741533ba19b6f3e5d65202dd5f7ae06484dc81b54b26eb0f5fb56c82085728aa4f7f9999173c287219d4160e9b313f13d34680a1d19c5e4f9a3b2a6f5f404e999fce0f18263df7ea00b60b6e679206f48be839d03fa1ff6827590ef098c5fc61cfa409626fed8031ed5f0c664f03b5824e007f4c3f475bea6caef55dc9b5ac35313cf2dff2be9159e19c6947adea8b2ed2213eb964fb69e88efeb67e947388ad8380f19bbd6c8a473eccd03221be208aa19eef1a4706211598d009de0d654014927d708146d243d6f65a21620d5ba49d446f637100675847367edef3c808ea39328fb650ef496f7f992bdbe9a5255ffb88cbcf315d7e90481b271934aea6222dff250f2b164f2dc6233f3e816a904a67178004416162b7578cf1769a0fa7d74d25af7cb96a01503887fa19d3f2c909f7f1c53bd8f342afc12f0aa163d4d15892c54d19af554a045d8960d01836d5d0145376417732a662b90a99e67368b7b4eec25654251862fb1acde6054266a45c4f5d13e1943e3fbe678ec15e91a58b69ad74ffa3ecd09965e27bf6717954c0ece456f15be2f4328351db76fea4fc645b10a30ad4b463f9cdc652e143ef2cebfb46367d729982e729a4d19e866776ad473098bbf6273b4eda3941acd3fccb0d97c9d9c78ea3e89884f2d24ee6efc955bccf9cad1e2685a59d63a5fe292ee6fc46e1e5dd2b975eb64cde8e8e61e5eb38905bbe98176bd8c716be37175a2834285b78521eb1fea449aed8e182f161a5938e0050f243a33d93f5fd98d38e99a14cb6841906b1d1bda7b66e47cab42ae24654bc37997beb27aa699a77403cc58830c945dbcad8a0c4095d946ad53ac4323c637456a46519e6cd3df4ca04f845483cda996a6dfcd5fb5e6cea213f24b6fc787a36ea9b3b3839ef34de992e706ccc7f5fe20848ba1a307b4d7fbb7d25ce21962b6123b49e4b563b37e3ca1bafc832034bd8fab77ce2aca6d6a26c2ffa82a52c9d6adb41c435d74303271fd3d04e732ae08bb0c1ccbf1b1dc4198118234729d76ca0efed58cf34aacac0fc50d71d01a3b7bcce423a2526510a84fff82c13300f49141bee17b1af34d29ad189864f5c967a488cd6600635fbf46a38f0b58280e01ef66597a1d7e95e2a6af30c303525ec6aa302c473c5b775a2803cf706abc98e9cbf3c5372fa2709998bdb0d49e68697988092f36b4e5b41cddd97e14b8e6de7b1a94257d083ac87e14710f77dd5cad59c59284b05373bc049f9229db7f998a041cfd3cf6591766bcbc5c8190af7a033a5b57da373951aff722c82206cf2a2ba5ce875e366b3919b06a2ea086c6ab4614ea577282d38fc858ac739b1fda8f632e93ec4d0e21dfdfab025a295bf7d3b064286fe81365b0cecb8e609d947e54fa988fb68a3cce5b0fa151c6f52562302b34ff1f03fae7eaa50c8d6767f67ef0e2bf4536b88f8c8a8fc6438d219842cb06a1675f0b6bd6e7d9ac2a0172e27a3269e848a68eeacae49a5a585a7b015c515611fc0fc03380d2190eea56642a2386428283a823d50aee301f0c31dbd27108916017b47e742f5d90823664c001b04c9de36c9ff317e300958cd8de7221807751d5dd2da34c8578be18cfbec77777a2e7b101b57d56c8876d63de673aac91e8dae34cd173dad0009209d0cae56cad1baba44106be3039c181c10ef63296bf289669cbf251af36fc2b81837b0e586964d43559711b9a587bdb2c202136300e7e4562bb168f8462970dd4f8b5826302277bfd1e12cfca9b022406f4938641b294f26efdf6d4bd37701ab0cc8df738100673b5e23735e087c9dd956f3d333c4c090d9e09ca3834e0e2916ef0bd685f2a8994df78037899907ddd6ff4bd9c9a4cd014d8fd4ad027053b9500eade9b3d5efd8d697d56abfcb51058262e130908fa507661463f2a0de0b77baacb268ebba6215ecbe4f65d8b4eb2e5be75b6bff6fb124e48504a65cb4aa475dc6ef7e3fa49147d131ac1aa54671ec42fe31cf22b5ed2ca2581dff231769a7c359cb70d40a';
+      //print(text.length);
+      //print(encrypter.encrypt(text));
+      //Clipboard.setData(new ClipboardData(text: encrypter.encrypt(text)));
+      var decryptedText = encrypter.decrypt(text);
+      //print(decryptedText);
+      //decryptedText = Uri.decodeComponent(decryptedText);
+      if (!decryptedText.startsWith('{\n')) {
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return new AlertDialog(
+                  title: new Text("Incorrect Code"),
+                  content: new Text("Please try again"),
+                  actions: <Widget>[
+                    new FlatButton(
+                      child: new Text("OKAY"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        SharedPreferences.getInstance().then((prefs) {
+                          prefs.setString('encryptionKey', '');
+                        });
+
+                        _refreshData();
+                      },
+                    )
+                  ]);
+            });
+      } else {
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setString('encryptionKey', encryptionKey);
+          credentials = new ServiceAccountCredentials.fromJson(decryptedText);
+          _doRefreshData();
+        });
+      }
+    }
+
+    SharedPreferences.getInstance().then((prefs) {
+      if (!prefs.getKeys().contains('encryptionKey'))
+        prefs.setString('encryptionKey', '');
+      var encryptionKey = prefs.getString('encryptionKey');
+
+      if (encryptionKey.length == 0) {
+        String _codeInput = '';
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return new AlertDialog(
+                  title: new Text("Enter Code"),
+                  content: new TextField(
+                    autofocus: true,
+                    onChanged: (String text) {
+                      _codeInput = text;
+                    },
+                  ),
+                  actions: <Widget>[
+                    new FlatButton(
+                      child: new Text("LOG IN"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _doDecrypt(_codeInput);
+                      },
+                    )
+                  ]);
+            });
+      } else {
+        _doDecrypt(encryptionKey);
+      }
+    });
+  }
+
+  void _doRefreshData() async {
     /*showDialog(
       context: context, barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
@@ -757,7 +828,18 @@ class DunavaDatabaseState extends State<DunavaDatabase>
     );*/
     var receivePort = new ReceivePort();
     await Isolate.spawn(_pullFromSpreadsheet, receivePort.sendPort);
+    var f = true;
     await for (var msg in receivePort) {
+      if (f) {
+        var sP = msg as SendPort;
+        if (database.isNotEmpty) {
+          sP.send([credentials, database["lastUpdated"]]);
+        } else {
+          sP.send([credentials, ""]);
+        }
+        f = false;
+        continue;
+      }
       var data = msg as Map;
       if (data["type"] == "progress") {
         setState(() {
@@ -769,12 +851,15 @@ class DunavaDatabaseState extends State<DunavaDatabase>
           _loadingProgress = "";
           _loading = false;
         });
+
+        Vibrate.vibrate();
+        Screen.keepOn(false);
         showDialog(
             barrierDismissible: false,
             context: context,
             builder: (BuildContext context) {
               return new AlertDialog(
-                  title: new Text("Connection Error"),
+                  title: new Text("Spreadsheet Error"),
                   content: new Text("${data["data"]}"),
                   actions: <Widget>[
                     new FlatButton(
@@ -803,6 +888,8 @@ class DunavaDatabaseState extends State<DunavaDatabase>
           people = l[0];
           database = l[1];
         });
+        Screen.keepOn(false);
+        Vibrate.vibrate();
       }
     }
     if (_loading) {
@@ -810,6 +897,8 @@ class DunavaDatabaseState extends State<DunavaDatabase>
         _loadingProgress = "";
         _loading = false;
       });
+      Screen.keepOn(false);
+      Vibrate.vibrate();
       _refreshData();
     }
 
@@ -840,11 +929,16 @@ class DunavaDatabaseState extends State<DunavaDatabase>
 
 _pullFromSpreadsheet(SendPort sendPort) async {
   var client = new http.Client();
+  var rP = new ReceivePort();
+  sendPort.send(rP.sendPort);
+  List msg = await rP.first;
+  var credentials = msg[0];
+  String lastUpdated = msg[1];
 
   sendPort.send({"type": "progress", "data": "Authenticating"});
   var people = {};
   obtainAccessCredentialsViaServiceAccount(
-          _credentials, ["https://spreadsheets.google.com/feeds"], client)
+          credentials, ["https://spreadsheets.google.com/feeds"], client)
       .then((AccessCredentials credentials) {
     String url =
         "https://spreadsheets.google.com/feeds/cells/13WlZBIQodwZuu4olBTR3UlQJfw06JZ3KWuwQ9Ig9qBE/od6/private/full?min-row=1&max-row=250&return-empty=false";
@@ -856,10 +950,20 @@ _pullFromSpreadsheet(SendPort sendPort) async {
     }).then((response) {
       sendPort.send({"type": "progress", "data": "Parsing cells"});
       var parsed = xml.parse(response.body);
+      String databaseUp =
+          parsed.findAllElements("updated").first.firstChild.toString();
+      print('$lastUpdated $databaseUp');
+      if (lastUpdated == databaseUp) {
+        throw "Database is already the latest version, no need to update";
+      }
       dynamic cells = parsed.findAllElements("gs:cell");
       cells = cells.map((cell) => new DunavaCell(cell.getAttribute("row"),
           cell.getAttribute("col"), cell.children[0]));
-      Map database = {"songs": [], "schemaVersion": databaseVersion};
+      Map database = {
+        "songs": [],
+        "schemaVersion": databaseVersion,
+        "lastUpdated": databaseUp
+      };
       var singerNames = {};
       cells
           .where((c) =>
@@ -916,13 +1020,17 @@ _pullFromSpreadsheet(SendPort sendPort) async {
 
         sendPort.send(
             {"type": "progress", "data": "$song: Converting singer parts"});
+        print(singerParts.length);
+        var iii = 0;
         singerParts.forEach((col, part) {
+          print(iii);
+          iii++;
           if (part.length > 0) {
             part = part.first;
             if (part.value == "0") {
               singerParts[col] = [];
             } else {
-              singerParts[col] = part.value.split(new RegExp(", *"));
+              singerParts[col] = part.value.split(", ");
             }
           } else {
             singerParts[col] = [];
@@ -945,7 +1053,7 @@ _pullFromSpreadsheet(SendPort sendPort) async {
             if (part.value == "0") {
               wSingerParts[col] = [];
             } else {
-              wSingerParts[col] = part.value.split(new RegExp(", *"));
+              wSingerParts[col] = part.value.split(", ");
             }
           } else {
             wSingerParts[col] = [];
@@ -961,12 +1069,16 @@ _pullFromSpreadsheet(SendPort sendPort) async {
             "wParts": wSingerParts[col]
           });
         });
+        print(songName);
 
         sendPort.send(
             {"type": "progress", "data": "$song: Adding song to database"});
         if (database["songs"].map((s) => s["name"]).contains(songName)) {
           var existingSong =
               database["songs"].firstWhere((s) => s["name"] == songName);
+          if (!existingSong["multi"]) {
+            throw "Error in spreadsheet: Check \"${existingSong["name"]}\". When a song has multiple rows, each section needs a colon and descriptor.";
+          }
           existingSong["sections"][songSection] = {
             "parts": parts,
             "singers": singers,
@@ -1008,11 +1120,11 @@ _pullFromSpreadsheet(SendPort sendPort) async {
       print(database);
     }).catchError((err) {
       print(err);
-      sendPort.send({"type": "error", "data": err});
+      sendPort.send({"type": "error", "data": err.toString()});
     });
   }).catchError((err) {
     print(err);
-    sendPort.send({"type": "error", "data": err});
+    sendPort.send({"type": "error", "data": err.toString()});
   });
 }
 
