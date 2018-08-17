@@ -1,0 +1,643 @@
+Launching lib/main.dart on Moto G 5 Plus in debug mode...
+Initializing gradle...
+Built build/app/outputs/apk/debug/app-debug.apk.
+Installing build/app/outputs/apk/app.apk...
+I/FlutterActivityDelegate( 6046): onResume setting current activity to this
+Syncing files to device Moto G 5 Plus...
+
+🔥  To hot reload changes while running, press "r". To hot restart (and rebuild state), press "R".
+An Observatory debugger and profiler on Moto G 5 Plus is available at: http://127.0.0.1:8114/
+For a more detailed help message, press "h". To quit, press "q".
+I/System.out( 6046): Keeping screen on 
+I/flutter ( 6046): 2018-08-16T20:54:06.010Z 2018-08-16T21:19:38.080Z
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): Second 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): Whole function: 44
+I/flutter ( 6046): null
+I/flutter ( 6046): First: 2
+I/flutter ( 6046): First: 2
+I/flutter ( 6046): First: 2
+I/flutter ( 6046): First: 2
+I/flutter ( 6046): First: 2
+I/flutter ( 6046): First: 2
+I/flutter ( 6046): First: 2
+I/flutter ( 6046): Second 2
+I/flutter ( 6046): First: 2
+I/flutter ( 6046): First: 2
+I/flutter ( 6046): First: 2
+I/flutter ( 6046): First: 2
+I/flutter ( 6046): Whole function: 34
+I/flutter ( 6046): null
+I/flutter ( 6046): First: 2
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): Whole function: 39
+I/flutter ( 6046): null
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): Second 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): First: 4
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Whole function: 207
+I/flutter ( 6046): null
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 4
+I/flutter ( 6046): First: 4
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): First: 4
+I/flutter ( 6046): First: 4
+I/flutter ( 6046): Whole function: 51
+I/flutter ( 6046): Begala E Vena
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): First: 3
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): First: 4
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): First: 4
+I/flutter ( 6046): First: 4
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Whole function: 298
+I/flutter ( 6046): Begala E Vena
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 4
+I/flutter ( 6046): First: 4
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): Second 5
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Whole function: 386
+I/flutter ( 6046): null
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Whole function: 227
+I/flutter ( 6046): null
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): Second 42
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 5
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Whole function: 384
+I/flutter ( 6046): null
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): Second 5
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): Whole function: 72
+I/flutter ( 6046): Byla Cesta
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 7
+I/flutter ( 6046): Second 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): Whole function: 279
+I/flutter ( 6046): Byla Cesta
+I/flutter ( 6046): First: 5
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): Whole function: 79
+I/flutter ( 6046): Daleko Je
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Whole function: 313
+I/flutter ( 6046): Daleko Je
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 6
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): Whole function: 88
+I/flutter ( 6046): null
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): Second 7
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): Whole function: 212
+I/flutter ( 6046): null
+I/flutter ( 6046): First: 7
+I/flutter ( 6046): First: 9
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): Second 8
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Whole function: 285
+I/flutter ( 6046): null
+I/flutter ( 6046): First: 9
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Whole function: 288
+I/flutter ( 6046): null
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 9
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Whole function: 285
+I/flutter ( 6046): null
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 9
+I/flutter ( 6046): First: 8
+I/flutter ( 6046): First: 9
+I/flutter ( 6046): First: 9
+I/flutter ( 6046): First: 9
+I/flutter ( 6046): First: 9
+I/flutter ( 6046): First: 9
+I/flutter ( 6046): First: 9
+I/flutter ( 6046): First: 9
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): Whole function: 115
+I/flutter ( 6046): Dragana I Slaveja
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): First: 9
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): First: 9
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): Whole function: 331
+I/flutter ( 6046): Dragana I Slaveja
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): Whole function: 264
+I/flutter ( 6046): Dragana I Slaveja
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Whole function: 337
+I/flutter ( 6046): Elate Dho Ghitonieses
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Whole function: 441
+I/flutter ( 6046): Elate Dho Ghitonieses
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): First: 10
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): Whole function: 141
+I/flutter ( 6046): Ergen Deda
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): Whole function: 344
+I/flutter ( 6046): Ergen Deda
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Whole function: 410
+I/flutter ( 6046): Ej Žito Žela
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 12
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Whole function: 513
+I/flutter ( 6046): Ej Žito Žela
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): First: 11
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): Second 12
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): First: 13
+I/flutter ( 6046): First: 13
+I/flutter ( 6046): First: 13
+I/flutter ( 6046): Whole function: 153
+I/flutter ( 6046): null
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): First: 13
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): First: 12
+I/flutter ( 6046): First: 13
+I/flutter ( 6046): First: 14
+I/flutter ( 6046): First: 13
+I/flutter ( 6046): First: 13
+I/flutter ( 6046): First: 13
+I/flutter ( 6046): First: 13
+I/flutter ( 6046): Whole function: 160
+I/flutter ( 6046): Heyamoli
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): First: 14
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): First: 13
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): First: 13
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Whole function: 442
+I/flutter ( 6046): Heyamoli
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): First: 13
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): First: 14
+I/flutter ( 6046): Whole function: 479
+I/flutter ( 6046): Hubava Milka
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 14
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): First: 14
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Whole function: 479
+I/flutter ( 6046): null
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 14
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): First: 14
+I/flutter ( 6046): First: 14
+I/flutter ( 6046): First: 14
+I/flutter ( 6046): First: 15
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Whole function: 387
+I/flutter ( 6046): Hubava Milka
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 14
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): First: 15
+I/flutter ( 6046): First: 14
+I/flutter ( 6046): First: 15
+I/flutter ( 6046): First: 14
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Whole function: 391
+I/flutter ( 6046): Hvala Vami (Ladarke 3)
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): First: 14
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 15
+I/flutter ( 6046): First: 15
+I/flutter ( 6046): First: 15
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 47
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Whole function: 428
+I/flutter ( 6046): Hvala Vami (Ladarke 3)
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): First: 16
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): First: 15
+I/flutter ( 6046): First: 16
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): First: 16
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Whole function: 404
+I/flutter ( 6046): Il Bastidor
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): Second 49
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 16
+I/flutter ( 6046): First: 15
+I/flutter ( 6046): First: 15
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 47
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Whole function: 463
+I/flutter ( 6046): Il Bastidor
+I/flutter ( 6046): Second 43
+I/flutter ( 6046): First: 15
+I/flutter ( 6046): Second 47
+I/flutter ( 6046): First: 16
+I/flutter ( 6046): First: 16
+I/flutter ( 6046): Second 16
+I/flutter ( 6046): First: 16
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 48
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Whole function: 406
+I/flutter ( 6046): null
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 15
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 16
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): Second 18
+I/flutter ( 6046): First: 16
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Whole function: 408
+I/flutter ( 6046): null
+I/flutter ( 6046): Second 47
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): Second 47
+I/flutter ( 6046): First: 16
+I/flutter ( 6046): First: 16
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Whole function: 383
+I/flutter ( 6046): null
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Whole function: 380
+I/flutter ( 6046): null
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 18
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 48
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 47
+I/flutter ( 6046): Whole function: 417
+I/flutter ( 6046): null
+I/flutter ( 6046): Second 44
+I/flutter ( 6046): First: 19
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): First: 18
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): First: 18
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 47
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Whole function: 445
+I/flutter ( 6046): null
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 18
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 17
+I/flutter ( 6046): First: 18
+I/flutter ( 6046): First: 18
+I/flutter ( 6046): First: 18
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 47
+I/flutter ( 6046): Second 47
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Whole function: 420
+I/flutter ( 6046): null
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 18
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): First: 18
+I/flutter ( 6046): First: 18
+I/flutter ( 6046): First: 18
+I/flutter ( 6046): First: 18
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 46
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Second 45
+I/flutter ( 6046): Whole function: 413
+I/flutter ( 6046): null
+Application finished.

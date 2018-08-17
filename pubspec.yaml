@@ -17,7 +17,6 @@ dependencies:
   shared_preferences: any
   encrypt: any
   screen: any
-  vibrate: any
 
 
 dev_dependencies:

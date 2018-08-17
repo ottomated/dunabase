@@ -15,15 +15,22 @@ import 'cross_off_text.dart';
 import 'dual_panel.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:screen/screen.dart';
-import 'package:vibrate/vibrate.dart';
 
 void main() => runApp(new DunavaApp());
 
 ServiceAccountCredentials credentials;
 
-final String databaseVersion = '2.0';
+final String databaseVersion = '2.1';
 final String spreadsheetUrl =
     'https://docs.google.com/spreadsheets/d/13WlZBIQodwZuu4olBTR3UlQJfw06JZ3KWuwQ9Ig9qBE/';
+
+class VerticalDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => RotatedBox(
+        quarterTurns: 1,
+        child: Divider(),
+      );
+}
 
 class DunavaCell {
   int row;
@@ -32,7 +39,7 @@ class DunavaCell {
   DunavaCell(String row, String col, var value) {
     this.row = int.parse(row);
     this.col = int.parse(col);
-    this.value = value.toString();
+    this.value = value == null ? "" : value.toString();
   }
   String toString() => "DunavaCell(${this.row},${this.col},\"${this.value}\")";
 }
@@ -322,7 +329,7 @@ class DunavaDatabaseState extends State<DunavaDatabase>
             appBar: new AppBar(
               title: new Text('songs for this combo'),
             ),
-            body: new ListView(children: divided),
+            body: new Scrollbar(child: ListView(children: divided)),
           );
         },
       ),
@@ -486,7 +493,6 @@ class DunavaDatabaseState extends State<DunavaDatabase>
                   .map((p) => {"text": p["name"], "w": p["w"]})
                   .toList();
 
-              print(selectedPeople.map((p) => people[p]));
               List rightNews = song["singers"]
                   .where((s) =>
                       selectedPeople
@@ -629,6 +635,25 @@ class DunavaDatabaseState extends State<DunavaDatabase>
     );
   }
 
+  List<Widget> _buildTopListView() {
+    List<Widget> ret = [];
+    for (int i = 0; i < people.keys.length; i += 3) {
+      ret.addAll([
+        new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              _buildListItem(people.keys.elementAt(i)),
+              new VerticalDivider(),
+              _buildListItem(people.keys.elementAt(i + 1)),
+              new VerticalDivider(),
+              _buildListItem(people.keys.elementAt(i + 2)),
+            ]),
+        new Divider()
+      ]);
+    }
+    return ret;
+  }
+
   Widget _buildBody() {
     return new Column(children: <Widget>[
       new Expanded(
@@ -639,11 +664,7 @@ class DunavaDatabaseState extends State<DunavaDatabase>
                       : Colors.white,
                   child: new ListView(
                       padding: const EdgeInsets.all(16.0),
-                      children: people.keys
-                          .map((person) =>
-                              [_buildListItem(person), new Divider()])
-                          .expand((i) => i)
-                          .toList())))),
+                      children: _buildTopListView())))),
       new Expanded(
           child: new Container(
               decoration: new BoxDecoration(
@@ -662,20 +683,32 @@ class DunavaDatabaseState extends State<DunavaDatabase>
   }
 
   Widget _buildListItem(String person) {
-    return new CheckboxListTile(
-      activeColor: Theme.of(context).accentColor,
-      title: new Text(person),
-      value: selectedPeople.contains(person),
-      onChanged: (bool value) {
-        setState(() {
-          if (selectedPeople.contains(person)) {
-            selectedPeople.remove(person);
-          } else {
-            selectedPeople.add(person);
-          }
+    Checkbox control = new Checkbox(
+        value: selectedPeople.contains(person),
+        activeColor: Theme.of(context).accentColor,
+        onChanged: (bool value) {
+          setState(() {
+            if (selectedPeople.contains(person)) {
+              selectedPeople.remove(person);
+            } else {
+              selectedPeople.add(person);
+            }
+          });
         });
-      },
-    );
+    return new Container(
+        width: 96.0,
+        child: new Material(
+          color: Color.fromRGBO(255, 255, 255, 0.0),
+          child: new InkWell(
+            onTap: () {
+              control.onChanged(!control.value);
+            },
+            child: new Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  new Text(person),
+                  control,
+                ]))));
   }
 
   Widget _selectedListItem(String person) {
@@ -752,6 +785,9 @@ class DunavaDatabaseState extends State<DunavaDatabase>
                           prefs.setString('encryptionKey', '');
                         });
 
+                        setState(() {
+                          _loading = false;
+                        });
                         _refreshData();
                       },
                     )
@@ -852,7 +888,6 @@ class DunavaDatabaseState extends State<DunavaDatabase>
           _loading = false;
         });
 
-        Vibrate.vibrate();
         Screen.keepOn(false);
         showDialog(
             barrierDismissible: false,
@@ -889,7 +924,6 @@ class DunavaDatabaseState extends State<DunavaDatabase>
           database = l[1];
         });
         Screen.keepOn(false);
-        Vibrate.vibrate();
       }
     }
     if (_loading) {
@@ -898,7 +932,6 @@ class DunavaDatabaseState extends State<DunavaDatabase>
         _loading = false;
       });
       Screen.keepOn(false);
-      Vibrate.vibrate();
       _refreshData();
     }
 
@@ -941,9 +974,10 @@ _pullFromSpreadsheet(SendPort sendPort) async {
           credentials, ["https://spreadsheets.google.com/feeds"], client)
       .then((AccessCredentials credentials) {
     String url =
-        "https://spreadsheets.google.com/feeds/cells/13WlZBIQodwZuu4olBTR3UlQJfw06JZ3KWuwQ9Ig9qBE/od6/private/full?min-row=1&max-row=250&return-empty=false";
+        "https://spreadsheets.google.com/feeds/cells/13WlZBIQodwZuu4olBTR3UlQJfw06JZ3KWuwQ9Ig9qBE/od6/private/full?min-row=1&max-row=250&return-empty=true";
 
     sendPort.send({"type": "progress", "data": "Getting spreadsheet data"});
+
     client.get(url, headers: {
       "Authorization": "Bearer " + credentials.accessToken.data,
       "Gdata-Version": "3.0"
@@ -952,13 +986,14 @@ _pullFromSpreadsheet(SendPort sendPort) async {
       var parsed = xml.parse(response.body);
       String databaseUp =
           parsed.findAllElements("updated").first.firstChild.toString();
-      print('$lastUpdated $databaseUp');
       if (lastUpdated == databaseUp) {
         throw "Database is already the latest version, no need to update";
       }
       dynamic cells = parsed.findAllElements("gs:cell");
-      cells = cells.map((cell) => new DunavaCell(cell.getAttribute("row"),
-          cell.getAttribute("col"), cell.children[0]));
+      cells = cells
+          .map((cell) => new DunavaCell(cell.getAttribute("row"),
+              cell.getAttribute("col"), cell.firstChild))
+          .toList();
       Map database = {
         "songs": [],
         "schemaVersion": databaseVersion,
@@ -976,9 +1011,14 @@ _pullFromSpreadsheet(SendPort sendPort) async {
             c.value;
       });
 
-      cells.where((c) => c.col == 1 && c.row > 2).forEach((cell) {
+      cells
+          .where((c) => c.col == 1 && c.row > 2 && c.value != "")
+          .forEach((cell) {
         dynamic song = cell.value;
+
         sendPort.send({"type": "progress", "data": "$song: Starting"});
+        var thisRow =
+            cells.sublist(28 * (cell.row - 1), 28 * (cell.row - 1) + 28);
         String songName, songSection;
         bool multi = false;
         if (song.contains(' : ')) {
@@ -988,77 +1028,49 @@ _pullFromSpreadsheet(SendPort sendPort) async {
           songSection = song[1];
         }
         sendPort.send({"type": "progress", "data": "$song: Getting details"});
-        var details = cells.where((c) => c.row == cell.row && c.col == 3);
-        if (details.length == 0) {
+        var details = thisRow.firstWhere((c) => c.col == 3, orElse: () => null);
+        if (details == null) {
           details = "";
         } else {
-          details = details.first.value;
+          details = details.value;
         }
         sendPort
             .send({"type": "progress", "data": "$song: Getting current-ness"});
-        var current = cells.where((c) => c.row == cell.row && c.col == 4);
-        if (current.length == 0) {
+        var current = thisRow.firstWhere((c) => c.col == 4, orElse: () => null);
+        if (current == null) {
           current = false;
         } else {
           current = true;
         }
         sendPort.send({"type": "progress", "data": "$song: Getting parts"});
-        var partsCell = cells.where((c) => c.row == cell.row && c.col == 2);
+        var partsCell =
+            thisRow.firstWhere((c) => c.col == 2, orElse: () => null);
         List<String> parts;
-        if (partsCell.length == 0) {
+        if (partsCell == null) {
           parts = [];
         } else {
-          parts = partsCell.first.value.split(new RegExp(", *"));
+          parts = partsCell.value.split(new RegExp(", *"));
         }
         sendPort
             .send({"type": "progress", "data": "$song: Getting singer parts"});
-        var singerParts = {};
-        singerNames.forEach((col, _) {
-          singerParts[col] =
-              cells.where((c) => c.col == col && c.row == cell.row);
-        });
-
-        sendPort.send(
-            {"type": "progress", "data": "$song: Converting singer parts"});
-        print(singerParts.length);
-        var iii = 0;
-        singerParts.forEach((col, part) {
-          print(iii);
-          iii++;
-          if (part.length > 0) {
-            part = part.first;
-            if (part.value == "0") {
-              singerParts[col] = [];
-            } else {
-              singerParts[col] = part.value.split(", ");
-            }
+        var singerParts = singerNames.map((col, _) {
+          final value = thisRow[col - 1].value;
+          if (value == "0" || value == "") {
+            return new MapEntry(col, []);
           } else {
-            singerParts[col] = [];
+            return new MapEntry(col, value.split(new RegExp(", *")));
           }
         });
-
         sendPort.send(
             {"type": "progress", "data": "$song: Getting singer W parts"});
-        var wSingerParts = {};
-        singerNames.forEach((col, _) {
-          wSingerParts[col] =
-              cells.where((c) => c.col == col + 1 && c.row == cell.row);
-        });
-
-        sendPort.send(
-            {"type": "progress", "data": "$song: Converting singer W parts"});
-        wSingerParts.forEach((col, part) {
-          if (part.length > 0) {
-            part = part.first;
-            if (part.value == "0") {
-              wSingerParts[col] = [];
-            } else {
-              wSingerParts[col] = part.value.split(", ");
-            }
+        var wSingerParts = singerNames.map((col, _) {
+          final value = thisRow[col].value;
+          if (value == "0" || value == "") {
+            return new MapEntry(col, []);
           } else {
-            wSingerParts[col] = [];
+            return new MapEntry(col, value.split(new RegExp(", *")));
           }
-        }); //print(singerParts);
+        });
 
         var singers = [];
 
@@ -1069,8 +1081,6 @@ _pullFromSpreadsheet(SendPort sendPort) async {
             "wParts": wSingerParts[col]
           });
         });
-        print(songName);
-
         sendPort.send(
             {"type": "progress", "data": "$song: Adding song to database"});
         if (database["songs"].map((s) => s["name"]).contains(songName)) {
@@ -1117,7 +1127,6 @@ _pullFromSpreadsheet(SendPort sendPort) async {
         "type": "done",
         "data": [people, database]
       });
-      print(database);
     }).catchError((err) {
       print(err);
       sendPort.send({"type": "error", "data": err.toString()});
