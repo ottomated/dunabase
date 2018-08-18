@@ -6,6 +6,7 @@ import "package:http/http.dart" as http;
 import "package:xml/xml.dart" as xml;
 import 'dart:convert';
 import 'dart:isolate';
+import 'dart:async';
 import 'dart:core';
 import 'dart:math';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,6 +16,8 @@ import 'cross_off_text.dart';
 import 'dual_panel.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:screen/screen.dart';
+import 'package:intl/intl.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void main() => runApp(new DunavaApp());
 
@@ -59,6 +62,66 @@ class DunavaApp extends StatelessWidget {
           return new MaterialApp(
               title: 'Dunabase', home: new DunavaDatabase(), theme: theme);
         });
+  }
+}
+
+class HelpPage extends StatefulWidget {
+  @override
+  createState() => new HelpPageState();
+}
+
+class HelpPageState extends State<HelpPage>
+    with SingleTickerProviderStateMixin {
+  int imageIndex = 0;
+  int maxImage = 7;
+  bool imagesCached = false;
+  TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = new TabController(vsync: this, length: maxImage + 1);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!imagesCached) {
+      imagesCached = true;
+      for (var j = 0; j < maxImage; j++) {
+        var i = new AssetImage('assets/help/help$j.png',
+            bundle: DefaultAssetBundle.of(context), package: null);
+        precacheImage(i, context);
+      }
+    }
+    var tbv = new TabBarView(
+        controller: _tabController,
+        children: [0, 1, 2, 3, 4, 5, 6, 7]
+            .map((i) => new Image.asset('assets/help/help$i.png'))
+            .toList());
+
+    _tabController.addListener(() {
+      setState(() {
+        imageIndex = _tabController.index;
+      });
+    });
+
+    var scaf = new Scaffold(
+        appBar: new AppBar(
+          backgroundColor: Color.fromRGBO(0, 66, 53, 1.0),
+          title: new Text('help (${imageIndex + 1} of ${maxImage + 1})'),
+        ),
+        body: new Builder(builder: (BuildContext context) {
+          return new Container(
+              color: Color.fromRGBO(0, 40, 32, 1.0),
+              child: new Center(child: tbv));
+        }));
+    return scaf;
   }
 }
 
@@ -110,7 +173,21 @@ class DunavaDatabaseState extends State<DunavaDatabase>
               );
             },
           ),
-          IconButton(icon: Icon(Icons.settings), onPressed: _pushSettings)
+          IconButton(
+              icon: Icon(Icons.help_outline),
+              onPressed: () {
+                Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new HelpPage()));
+
+                Fluttertoast.showToast(
+                    msg: "Swipe to navigate",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIos: 2,
+                    bgcolor: "#0d0d0d",
+                    textcolor: '#ffffff');
+              }),
+          IconButton(icon: Icon(Icons.settings), onPressed: _pushSettings),
         ],
       ),
       body: new ModalProgressHUD(
@@ -166,7 +243,8 @@ class DunavaDatabaseState extends State<DunavaDatabase>
     });
   }
 
-  void _calculateCombos() {
+  List _doCalculations() {
+    if (database.isEmpty) return [];
     var results = [];
     doSongW(song) {
       //print("\n\nDoing ${song["name"]}");
@@ -246,7 +324,7 @@ class DunavaDatabaseState extends State<DunavaDatabase>
           if (perms.length > 0) {
             results.add({
               "name": song["name"],
-              "details": "*",
+              "details": "W",
               "song": song,
               "perms": perms,
               "w": true
@@ -278,7 +356,7 @@ class DunavaDatabaseState extends State<DunavaDatabase>
         if (canSing) {
           results.add({
             "name": "${song["name"]}",
-            "details": "${w ? "* | " : ""}${song["sections"].length} sections",
+            "details": "${w ? "W — " : ""}${song["sections"].length} sections",
             "song": song,
             "perms": permsMap,
             "w": w
@@ -286,6 +364,11 @@ class DunavaDatabaseState extends State<DunavaDatabase>
         }
       }
     });
+    return results;
+  }
+
+  void _calculateCombos() {
+    var results = _doCalculations();
 
     results.sort((a, b) {
       if (a["w"]) return 1;
@@ -597,7 +680,7 @@ class DunavaDatabaseState extends State<DunavaDatabase>
                 }),
             new SwitchListTile(
                 title: new Text(
-                    "${excludeW ? "Exclude" : "Include"} tentative parts"),
+                    "Tentative (w) Parts ${excludeW ? "Ex" : "In"}cluded"),
                 value: excludeW,
                 activeColor: Theme.of(context).accentColor,
                 onChanged: (bool value) {
@@ -615,6 +698,9 @@ class DunavaDatabaseState extends State<DunavaDatabase>
               title: new Text("View Spreadsheet"),
               trailing: Icon(Icons.open_in_new),
               onTap: _launchURL,
+            ),
+            new ListTile(
+              title: new Text("App created by Otto Sapora, 15.7.18 through 17.8.18")
             )
           ];
           final divided = ListTile
@@ -675,9 +761,8 @@ class DunavaDatabaseState extends State<DunavaDatabase>
                       top: new BorderSide(
                           color: Theme.of(context).dividerColor))),
               child: new ListView(
-                physics: BouncingScrollPhysics(),
+                physics: new BouncingScrollPhysics(),
                 children: _generateDoubleColumnList(),
-                padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
               )))
     ]);
   }
@@ -698,17 +783,17 @@ class DunavaDatabaseState extends State<DunavaDatabase>
     return new Container(
         width: 96.0,
         child: new Material(
-          color: Color.fromRGBO(255, 255, 255, 0.0),
-          child: new InkWell(
-            onTap: () {
-              control.onChanged(!control.value);
-            },
-            child: new Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  new Text(person),
-                  control,
-                ]))));
+            color: Color.fromRGBO(255, 255, 255, 0.0),
+            child: new InkWell(
+                onTap: () {
+                  control.onChanged(!control.value);
+                },
+                child: new Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      new Text(person),
+                      control,
+                    ]))));
   }
 
   Widget _selectedListItem(String person) {
@@ -717,14 +802,39 @@ class DunavaDatabaseState extends State<DunavaDatabase>
   }
 
   List<Widget> _generateDoubleColumnList() {
+    Container _buildItem(text) {
+      return new Container(
+          padding: EdgeInsets.all(5.0),
+          child: new Center(
+              child: new Text(
+            text,
+            style: new TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor),
+          )));
+    }
+
     List<Widget> result = [];
-    result.add(new ListTile(
-        title: new Center(
-            child: new Text(
-      "${selectedPeople.length} singer${selectedPeople.length == 1 ? "" : "s"} selected",
-      style: new TextStyle(
-          fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
-    ))));
+    result.add(_buildItem(
+        "${selectedPeople.length} singer${selectedPeople.length == 1 ? "" : "s"} selected"));
+    var results = _doCalculations();
+    var ws = results.where((a) => a["w"]).length;
+    var wtxt = "";
+    if (ws > 0) {
+      wtxt = '($ws tentative)';
+    }
+
+    result.add(_buildItem(
+        "${results.length} song${results.length == 1 ? "" : "s"} for this combo $wtxt"));
+    var when = "";
+    if (database.isEmpty) {
+      when = "never";
+    } else {
+      var d = DateTime.parse(database["lastUpdated"]).toLocal();
+      var formatter = new DateFormat('MMM d hh:mm a');
+      when = 'at ${formatter.format(d)}';
+    }
+    result.add(_buildItem("Database updated $when"));
 
     for (var i = 0; i < selectedPeople.length; i += 3) {
       String next = "";
@@ -1028,29 +1138,14 @@ _pullFromSpreadsheet(SendPort sendPort) async {
           songSection = song[1];
         }
         sendPort.send({"type": "progress", "data": "$song: Getting details"});
-        var details = thisRow.firstWhere((c) => c.col == 3, orElse: () => null);
-        if (details == null) {
-          details = "";
-        } else {
-          details = details.value;
-        }
+        var details = thisRow[2].value;
         sendPort
             .send({"type": "progress", "data": "$song: Getting current-ness"});
-        var current = thisRow.firstWhere((c) => c.col == 4, orElse: () => null);
-        if (current == null) {
-          current = false;
-        } else {
-          current = true;
-        }
+        var current = thisRow[3].value == "" ? false : true;
         sendPort.send({"type": "progress", "data": "$song: Getting parts"});
-        var partsCell =
-            thisRow.firstWhere((c) => c.col == 2, orElse: () => null);
-        List<String> parts;
-        if (partsCell == null) {
-          parts = [];
-        } else {
-          parts = partsCell.value.split(new RegExp(", *"));
-        }
+        var partsCell = thisRow[1];
+        List<String> parts = partsCell.value.split(new RegExp(", *"));
+
         sendPort
             .send({"type": "progress", "data": "$song: Getting singer parts"});
         var singerParts = singerNames.map((col, _) {
