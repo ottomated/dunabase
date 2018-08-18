@@ -516,7 +516,7 @@ class DunavaDatabaseState extends State<DunavaDatabase>
                           children: [
                             new TextSpan(
                                 text:
-                                    '${section["details"] == "" ? "" : "\r\n"}${section["details"]}',
+                                    '${section["details"] == "" ? "" : "\n"}${section["details"]}',
                                 style: new TextStyle(fontSize: 20.0))
                           ])));
               sections.add({
@@ -606,7 +606,13 @@ class DunavaDatabaseState extends State<DunavaDatabase>
                     textAlign: TextAlign.center,
                     text: new TextSpan(
                         text: '${song["details"]}',
-                        style: new TextStyle(fontSize: 20.0))));
+                        style: new TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24.0))));
             Map<String, Widget> section = {
               "left": new Column(children: <Widget>[
                 header,
@@ -700,8 +706,8 @@ class DunavaDatabaseState extends State<DunavaDatabase>
               onTap: _launchURL,
             ),
             new ListTile(
-              title: new Text("App created by Otto Sapora, 15.7.18 through 17.8.18")
-            )
+                title: new Text(
+                    "App created by Otto Sapora, 15.7.18 through 17.8.18"))
           ];
           final divided = ListTile
               .divideTiles(
@@ -723,19 +729,31 @@ class DunavaDatabaseState extends State<DunavaDatabase>
 
   List<Widget> _buildTopListView() {
     List<Widget> ret = [];
-    for (int i = 0; i < people.keys.length; i += 3) {
-      ret.addAll([
-        new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              _buildListItem(people.keys.elementAt(i)),
-              new VerticalDivider(),
-              _buildListItem(people.keys.elementAt(i + 1)),
-              new VerticalDivider(),
-              _buildListItem(people.keys.elementAt(i + 2)),
-            ]),
-        new Divider()
-      ]);
+    if ((MediaQuery.of(context).size.width / 3) - 15 > 96.0) {
+      for (int i = 0; i < people.keys.length; i += 3) {
+        ret.addAll([
+          new Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _buildListItem(people.keys.elementAt(i), 3),
+                _buildListItem(people.keys.elementAt(i + 1), 3),
+                _buildListItem(people.keys.elementAt(i + 2), 3),
+              ]),
+          new Divider()
+        ]);
+      }
+    } else {
+      for (int i = 0; i < people.keys.length; i += 2) {
+        ret.addAll([
+          new Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _buildListItem(people.keys.elementAt(i), 2),
+                _buildListItem(people.keys.elementAt(i + 1), 2)
+              ]),
+          new Divider()
+        ]);
+      }
     }
     return ret;
   }
@@ -767,7 +785,7 @@ class DunavaDatabaseState extends State<DunavaDatabase>
     ]);
   }
 
-  Widget _buildListItem(String person) {
+  Widget _buildListItem(String person, int flex) {
     Checkbox control = new Checkbox(
         value: selectedPeople.contains(person),
         activeColor: Theme.of(context).accentColor,
@@ -781,7 +799,7 @@ class DunavaDatabaseState extends State<DunavaDatabase>
           });
         });
     return new Container(
-        width: 96.0,
+        width: (MediaQuery.of(context).size.width / flex) - 15,
         child: new Material(
             color: Color.fromRGBO(255, 255, 255, 0.0),
             child: new InkWell(
